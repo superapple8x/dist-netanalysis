@@ -202,6 +202,16 @@ dist-netanalysis/
 
 ## Testing
 
+### For First-Time Users & QA Teams
+
+📚 **See the comprehensive [Testing Guide](docs/TESTING_GUIDE.md)** for complete instructions on:
+- Hadoop installation from scratch
+- Environment setup and configuration
+- Step-by-step testing procedures
+- Troubleshooting common issues
+
+⚡ **Quick Start**: Experienced users with Hadoop already installed can use the [Quick Start Guide](docs/QUICK_START.md).
+
 ### Local Testing (without Hadoop)
 Test individual components locally:
 
@@ -218,12 +228,16 @@ Run full pipeline on Hadoop:
 
 ```bash
 # Upload test data
+hadoop fs -mkdir -p /input/pcap
 hadoop fs -put test_data/sample.pcap /input/pcap/
 
 # Run all jobs
-./scripts/run_preprocessing.sh
-./scripts/run_traffic_volume.sh
-./scripts/run_conversation_analysis.sh
+./scripts/run_preprocessing.sh /input/pcap /output/preprocessing
+./scripts/run_traffic_volume.sh /output/preprocessing /output/traffic_volume
+./scripts/run_conversation_analysis.sh /output/preprocessing /output/conversation_analysis
+
+# View results
+hadoop fs -cat /output/traffic_volume/part-*
 ```
 
 ## Troubleshooting

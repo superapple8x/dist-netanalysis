@@ -33,8 +33,8 @@ echo "Output: $OUTPUT_DIR"
 
 hadoop jar $HADOOP_STREAMING_JAR \
     -files "$PROJECT_DIR/traffic_volume/mapper.py,$PROJECT_DIR/traffic_volume/reducer.py" \
-    -mapper "python3 $PROJECT_DIR/traffic_volume/mapper.py" \
-    -reducer "python3 $PROJECT_DIR/traffic_volume/reducer.py" \
+    -mapper "python3 mapper.py" \
+    -reducer "python3 reducer.py" \
     -input "$INPUT_DIR" \
     -output "$OUTPUT_DIR"
 

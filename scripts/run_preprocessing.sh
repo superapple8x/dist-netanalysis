@@ -35,11 +35,10 @@ echo "Output: $OUTPUT_DIR"
 
 hadoop jar $HADOOP_STREAMING_JAR \
     -files "$PROJECT_DIR/preprocessing/mapper.py,$PROJECT_DIR/preprocessing/reducer.py" \
-    -mapper "python3 $PROJECT_DIR/preprocessing/mapper.py" \
-    -reducer "python3 $PROJECT_DIR/preprocessing/reducer.py" \
+    -mapper "python3 mapper.py" \
+    -reducer "python3 reducer.py" \
     -input "$INPUT_DIR" \
-    -output "$OUTPUT_DIR" \
-    -inputformat org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat
+    -output "$OUTPUT_DIR"
 
 if [ $? -eq 0 ]; then
     echo "Preprocessing job completed successfully!"
