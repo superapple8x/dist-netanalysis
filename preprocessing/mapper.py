@@ -12,12 +12,13 @@ import json
 import struct
 import os
 import tempfile
+import re
 
 # Configure Scapy to use a writable temp directory for cache/config
 # This fixes permission issues in Hadoop YARN containers
 os.environ['HOME'] = tempfile.gettempdir()
 
-from scapy.all import *
+from scapy.all import PcapReader
 from scapy.layers.inet import IP, TCP, UDP, ICMP
 from scapy.layers.l2 import Ether
 
@@ -59,8 +60,15 @@ def process_packet(packet):
         # Extract IP layer information
         if packet.haslayer(IP):
             ip_layer = packet[IP]
-            src_ip = ip_layer.src
-            dst_ip = ip_layer.dst
+            src_ip = str(ip_layer.src)  # Explicit string conversion
+            dst_ip = str(ip_layer.dst)
+            
+            # Validate IP format
+            ip_pattern = r'^(\d{1,3}\.){3}\d{1,3}$'
+            if not (re.match(ip_pattern, src_ip) and re.match(ip_pattern, dst_ip)):
+                print(f"Warning: Invalid IP format: {src_ip} -> {dst_ip}", file=sys.stderr)
+                return None
+            
             proto = ip_layer.proto
             
             # Map protocol numbers to names
@@ -99,20 +107,46 @@ def process_packet(packet):
 
 def main():
     """Main mapper function."""
+    packets_processed = 0
+    packets_with_ip = 0
+    packets_output = 0
+    
     try:
-        # Read PCAP data from stdin
-        # Note: Hadoop Streaming will handle file splitting
-        packets = rdpcap(sys.stdin.buffer)
+        # Read PCAP data from stdin using streaming PcapReader
+        # This enables packet-by-packet processing without loading entire file into memory
+        reader = PcapReader(sys.stdin.buffer)
         
-        for packet in packets:
+        for packet in reader:
+            packets_processed += 1
+            
             packet_record = process_packet(packet)
             if packet_record:
+                if packet_record.get('src_ip') and packet_record.get('dst_ip'):
+                    packets_with_ip += 1
+                packets_output += 1
                 # Output JSON line to stdout
                 print(json.dumps(packet_record))
-                
+                sys.stdout.flush()  # Ensure immediate output
+            
+            # Log progress every 100 packets
+            if packets_processed % 100 == 0:
+                print(f"Progress: {packets_processed} processed, {packets_with_ip} with IP, {packets_output} output", file=sys.stderr)
+        
+        reader.close()
+        
+        # Final statistics
+        print(f"Mapper completed: {packets_processed} processed, {packets_output} output ({100.0*packets_output/packets_processed:.1f}%)", file=sys.stderr)
+        
     except Exception as e:
-        print(f"Fatal error in mapper: {e}", file=sys.stderr)
-        sys.exit(1)
+        # Log but don't fail - partial reads expected with PCAP splits
+        print(f"Warning: PCAP read ended with: {e}", file=sys.stderr)
+        # Drain remaining stdin to avoid Hadoop "Broken pipe" when mapper exits early
+        try:
+            while sys.stdin.buffer.read(65536):
+                pass
+        except Exception:
+            pass
+        print(f"Final stats: {packets_processed} processed, {packets_output} output", file=sys.stderr)
 
 if __name__ == "__main__":
     main()

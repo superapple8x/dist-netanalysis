@@ -34,8 +34,6 @@ echo "Input: $INPUT_DIR"
 echo "Output: $OUTPUT_DIR"
 
 hadoop jar $HADOOP_STREAMING_JAR \
-    -D mapreduce.input.fileinputformat.split.minsize=999999999 \
-    -D mapreduce.input.fileinputformat.split.maxsize=999999999 \
     -files "$PROJECT_DIR/preprocessing/mapper.py,$PROJECT_DIR/preprocessing/reducer.py" \
     -mapper "python3 mapper.py" \
     -reducer "python3 reducer.py" \

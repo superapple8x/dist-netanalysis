@@ -19,6 +19,9 @@ def validate_json_line(line):
 
 def main():
     """Main reducer function."""
+    valid_count = 0
+    invalid_count = 0
+    
     try:
         for line in sys.stdin:
             line = line.strip()
@@ -27,11 +30,20 @@ def main():
                 
             # Validate JSON format
             if validate_json_line(line):
-                # Output valid JSON line
-                print(line)
+                # Output valid JSON line (stripped to remove trailing tabs)
+                print(line.strip())
+                valid_count += 1
             else:
-                # Log invalid JSON to stderr
-                print(f"Invalid JSON line: {line}", file=sys.stderr)
+                # Log invalid JSON with diagnostic info
+                try:
+                    obj = json.loads(line)
+                    print(f"Valid JSON but rejected in validation: {obj}", file=sys.stderr)
+                except:
+                    print(f"Invalid JSON syntax: {line[:100]}", file=sys.stderr)
+                invalid_count += 1
+        
+        # Final statistics
+        print(f"Reducer completed: {valid_count} valid, {invalid_count} invalid", file=sys.stderr)
                 
     except Exception as e:
         print(f"Fatal error in reducer: {e}", file=sys.stderr)
