@@ -10,6 +10,13 @@ proto, size, and tcp_flags.
 import sys
 import json
 import struct
+import os
+import tempfile
+
+# Configure Scapy to use a writable temp directory for cache/config
+# This fixes permission issues in Hadoop YARN containers
+os.environ['HOME'] = tempfile.gettempdir()
+
 from scapy.all import *
 from scapy.layers.inet import IP, TCP, UDP, ICMP
 from scapy.layers.l2 import Ether
