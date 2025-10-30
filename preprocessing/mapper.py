@@ -22,6 +22,9 @@ from scapy.all import PcapReader
 from scapy.layers.inet import IP, TCP, UDP, ICMP
 from scapy.layers.l2 import Ether
 
+# Configuration flags (can be controlled via environment variables)
+INCLUDE_NON_IP = os.environ.get('INCLUDE_NON_IP', 'false').lower() in ('1', 'true', 'yes', 'y')
+
 def extract_tcp_flags(packet):
     """Extract TCP flags as a string representation."""
     if packet.haslayer(TCP):
@@ -85,6 +88,21 @@ def process_packet(packet):
                 udp_layer = packet[UDP]
                 src_port = udp_layer.sport
                 dst_port = udp_layer.dport
+        else:
+            # Handle non-IP packets if configured to include them
+            if INCLUDE_NON_IP:
+                return {
+                    'timestamp': timestamp,
+                    'src_ip': None,
+                    'dst_ip': None,
+                    'src_port': None,
+                    'dst_port': None,
+                    'proto': 'NON_IP',
+                    'size': size,
+                    'tcp_flags': None,
+                }
+            # If not including non-IP packets, skip this packet
+            return None
         
         # Create packet record
         packet_record = {
