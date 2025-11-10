@@ -1,0 +1,25 @@
+# Sample systemd unit for Hadoop PCAP ingestion watcher.
+# Copy to /etc/systemd/system/pcap-watcher.service and adjust values before enabling.
+
+[Unit]
+Description=PCAP directory watcher and Hadoop ingestion
+Documentation=file:/home/pepper/dist-netanalysis/docs/LIVE_PIPELINE_SETUP.md
+After=network-online.target tshark-capture.service
+Wants=network-online.target
+Requires=tshark-capture.service
+
+[Service]
+Type=simple
+User=hadoop
+Group=hadoop
+WorkingDirectory=/home/pepper/dist-netanalysis
+EnvironmentFile=/etc/pcap_watcher.env
+Environment="HADOOP_CONF_DIR=/opt/hadoop/etc/hadoop"
+ExecStart=/usr/bin/env python3 /home/pepper/dist-netanalysis/scripts/watch_and_process_pcaps.py --local-dir ${WATCH_LOCAL_DIR} --interval ${WATCH_INTERVAL} --stability-checks ${WATCH_STABILITY_CHECKS} --stability-interval ${WATCH_STABILITY_INTERVAL} --hdfs-input-base ${WATCH_HDFS_INPUT_BASE} --hdfs-preprocessing-base ${WATCH_HDFS_PREPROCESSING_BASE} --hdfs-traffic-base ${WATCH_HDFS_TRAFFIC_BASE} --hdfs-conversation-base ${WATCH_HDFS_CONVERSATION_BASE}
+Restart=on-failure
+RestartSec=15s
+Environment="PYTHONUNBUFFERED=1"
+
+[Install]
+WantedBy=multi-user.target
+

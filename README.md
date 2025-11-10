@@ -158,6 +158,8 @@ hadoop fs -get /output/traffic_volume ./results/
 
 For setups where Wireshark (or another capture utility) continuously saves `.pcap` files into a directory, you can automate ingestion and analysis with the watcher script:
 
+➡️ For a fully automated, systemd-managed live pipeline, follow `docs/LIVE_PIPELINE_SETUP.md`.
+
 ```bash
 # Example: watch ~/pcap_outbox for new captures, archive processed files,
 # and keep results separated per capture under /output/*/live/<run-id>

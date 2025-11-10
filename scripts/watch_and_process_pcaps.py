@@ -28,7 +28,7 @@ import shutil
 import subprocess
 import sys
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, Optional
 
@@ -142,7 +142,7 @@ def process_capture(
     state: Dict[str, Dict[str, float]],
 ) -> None:
     """Upload the capture to HDFS and run the full Hadoop pipeline."""
-    run_timestamp = datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
+    run_timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     slug = slugify(local_path.stem)
     run_id = f"{slug}_{run_timestamp}"
 

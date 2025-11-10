@@ -1,0 +1,26 @@
+# Sample systemd unit for continuous tshark capture.
+# Copy to /etc/systemd/system/tshark-capture.service and adjust paths/users as needed.
+
+[Unit]
+Description=Headless tshark capture for Hadoop ingestion
+Documentation=file:/home/pepper/dist-netanalysis/docs/LIVE_PIPELINE_SETUP.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/home/pepper/dist-netanalysis
+EnvironmentFile=/etc/tshark_capture.env
+Environment="HADOOP_CONF_DIR=/opt/hadoop/etc/hadoop"
+ExecStart=/home/pepper/dist-netanalysis/scripts/run_tshark_capture.sh
+Restart=on-failure
+RestartSec=5s
+AmbientCapabilities=CAP_NET_ADMIN CAP_NET_RAW
+CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_RAW
+NoNewPrivileges=yes
+
+[Install]
+WantedBy=multi-user.target
+
