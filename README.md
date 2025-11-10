@@ -154,6 +154,27 @@ hadoop fs -cat /output/conversation_analysis/part-*
 hadoop fs -get /output/traffic_volume ./results/
 ```
 
+### Continuous Processing (Optional)
+
+For setups where Wireshark (or another capture utility) continuously saves `.pcap` files into a directory, you can automate ingestion and analysis with the watcher script:
+
+```bash
+# Example: watch ~/pcap_outbox for new captures, archive processed files,
+# and keep results separated per capture under /output/*/live/<run-id>
+python3 scripts/watch_and_process_pcaps.py \
+  --local-dir ~/pcap_outbox \
+  --archive-dir ~/pcap_archive \
+  --interval 30
+```
+
+Highlights:
+- Polls the chosen directory for new `.pcap` files (configurable interval and stability checks)
+- Uploads each capture to HDFS under `/input/pcap/live/<run-id>`
+- Runs all three Hadoop jobs, storing outputs under `/output/{preprocessing,traffic_volume,conversation_analysis}/live/<run-id>`
+- Optionally archives the processed captures locally so the directory stays tidy
+
+Progress is tracked in `state/pcap_watch_state.json`, allowing the script to resume without reprocessing unchanged files. Run with `--help` to see additional options, including `--once` for one-shot processing of a backlog.
+
 ## Output Formats
 
 ### Pre-processing Output (JSON)
