@@ -110,6 +110,58 @@ sudo systemctl enable --now pcap-watcher.service
   - `state/pcap_watch_state.json` records processed files.
   - Hadoop job logs remain available under the usual `hadoop fs -cat /output/...` paths.
 
+## Expected Outcomes & Validation
+
+Follow the checklist below to confirm the live pipeline is operating correctly.  If any step fails, double-check the previous configuration sections before proceeding.
+
+1. **Systemd reports healthy services**  
+   Both services should be `active (running)`:
+
+   ```bash
+   systemctl is-active tshark-capture.service   # → active
+   systemctl is-active pcap-watcher.service     # → active
+   ```
+
+2. **Rotating capture files appear locally**  
+   Within one polling interval (`WATCH_INTERVAL`) you should see files like:
+
+   ```bash
+   ls -lh /var/lib/pcap-stream/
+   # live_20251113-120501.pcap  live_20251113-120531.pcap  …
+   ```
+   Their sizes will stabilise once `dumpcap` finishes each rotation.
+
+3. **Watcher log shows successful processing**  
+   Tail the journal or the service output and look for messages similar to:
+
+   ```text
+   [2025-11-13 12:06:08] Detected new or updated PCAP: live_20251113-120501.pcap
+   [2025-11-13 12:06:45] Processing for live_20251113-120501.pcap complete (run id: live_20251113-120501_20251113T120645Z).
+   ```
+
+4. **HDFS directories are populated**  
+   After a capture is processed, the following directories (with matching *run-id*) should exist and contain `part-00000` files:
+
+   ```bash
+   hadoop fs -ls /input/pcap/live/
+   hadoop fs -ls /output/preprocessing/live/
+   hadoop fs -ls /output/traffic_volume/live/
+   hadoop fs -ls /output/conversation_analysis/live/
+   ```
+
+5. **Job outputs are readable**  
+   Example quick sanity-check:
+
+   ```bash
+   hadoop fs -cat /output/traffic_volume/live/*/part-00000 | head
+   # 192.168.1.10  1048576  2097152
+   ```
+
+6. **Optional archive directory**  
+   If you configured `--archive-dir`, the processed `.pcap` moves there instead of remaining in the capture directory.
+
+When every item above passes, the tester can be confident the live pipeline is ingesting traffic, running all three Hadoop jobs, and persisting results without manual intervention.
+
 ## Operational Tips
 
 - Rotate or ship `TSHARK_CAPTURE_LOG_DIR` and journal logs into central logging.
