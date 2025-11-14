@@ -51,9 +51,22 @@ def run_command(cmd: list[str], cwd: Optional[Path] = None) -> None:
     pretty_cmd = " ".join(str(part) for part in cmd)
     log(f"Running: {pretty_cmd}")
     try:
-        subprocess.run(cmd, check=True, cwd=str(cwd or PROJECT_ROOT))
+        result = subprocess.run(
+            cmd,
+            check=True,
+            cwd=str(cwd or PROJECT_ROOT),
+            capture_output=True,
+            text=True,
+        )
+        if result.stdout:
+            log(f"Output: {result.stdout.strip()}")
     except subprocess.CalledProcessError as exc:
-        raise CommandError(f"Command failed ({exc.returncode}): {pretty_cmd}") from exc
+        error_msg = f"Command failed ({exc.returncode}): {pretty_cmd}"
+        if exc.stdout:
+            error_msg += f"\n  stdout: {exc.stdout.strip()}"
+        if exc.stderr:
+            error_msg += f"\n  stderr: {exc.stderr.strip()}"
+        raise CommandError(error_msg) from exc
 
 
 def ensure_hdfs_directory(path: str) -> None:
