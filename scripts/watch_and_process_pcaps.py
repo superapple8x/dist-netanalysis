@@ -164,16 +164,45 @@ def process_capture(
     hdfs_traffic_output = f"{args.hdfs_traffic_base.rstrip('/')}/{run_id}"
     hdfs_conversation_output = f"{args.hdfs_conversation_base.rstrip('/')}/{run_id}"
 
-    log(f"Uploading {local_path} to HDFS directory {hdfs_input_dir}")
-    upload_pcap_to_hdfs(local_path, hdfs_input_dir)
+    log(f"Running local preprocessing for {local_path}...")
+    
+    # 1. Run preprocessing locally (PCAP -> JSON)
+    # We do this locally because Hadoop Streaming Text InputFormat corrupts binary PCAP files
+    json_temp_path = local_path.with_suffix(".json")
+    mapper_script = PROJECT_ROOT / "preprocessing" / "mapper.py"
+    
+    try:
+        with open(local_path, "rb") as pcap_in, open(json_temp_path, "w") as json_out:
+            # Run mapper.py as a subprocess, piping pcap to stdin and json to stdout
+            subprocess.run(
+                [sys.executable, str(mapper_script)],
+                stdin=pcap_in,
+                stdout=json_out,
+                check=True,
+                cwd=str(PROJECT_ROOT)
+            )
+    except subprocess.CalledProcessError as e:
+        log(f"Error during local preprocessing: {e}")
+        if json_temp_path.exists():
+            json_temp_path.unlink()
+        raise CommandError(f"Local preprocessing failed for {local_path}")
 
-    preprocessing_script = PROJECT_ROOT / "scripts" / "run_preprocessing.sh"
+    # 2. Upload JSON to HDFS (this becomes the 'preprocessing' output)
+    # We upload directly to the preprocessing output directory
+    log(f"Uploading processed JSON to {hdfs_pre_output}")
+    ensure_hdfs_directory(hdfs_pre_output)
+    run_command(["hadoop", "fs", "-put", "-f", str(json_temp_path), hdfs_pre_output])
+    
+    # Clean up local JSON
+    json_temp_path.unlink()
+
+    # 3. Run Analysis Jobs (HDFS JSON -> HDFS Results)
     traffic_script = PROJECT_ROOT / "scripts" / "run_traffic_volume.sh"
     conversation_script = PROJECT_ROOT / "scripts" / "run_conversation_analysis.sh"
 
-    run_command(
-        [str(preprocessing_script), hdfs_input_dir, hdfs_pre_output]
-    )
+    # Note: These scripts expect an input directory containing part-* files or similar.
+    # Our upload created a single file in hdfs_pre_output. This works fine for Hadoop inputs.
+    
     run_command(
         [str(traffic_script), hdfs_pre_output, hdfs_traffic_output]
     )

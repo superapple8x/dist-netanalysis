@@ -1,0 +1,12 @@
+{
+  "/home/pepper/pcap_staging/my_capture.pcap": {
+    "hdfs_conversation": "/output/conversation_analysis/live/my_capture_20251125T035407Z",
+    "hdfs_input": "/input/pcap/live/my_capture_20251125T035407Z",
+    "hdfs_preprocessing": "/output/preprocessing/live/my_capture_20251125T035407Z",
+    "hdfs_traffic": "/output/traffic_volume/live/my_capture_20251125T035407Z",
+    "mtime": 1764042797.497526,
+    "processed_at": 1764042959.0996475,
+    "run_id": "my_capture_20251125T035407Z",
+    "size": 709336
+  }
+}

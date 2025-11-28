@@ -7,3 +7,5 @@ test_data/
 preprocessing/__pycache__/
 
 log_13nov.txt
+logs/
+logs/tshark/capture.log

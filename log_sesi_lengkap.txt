@@ -1,0 +1,55 @@
+Script started on 2025-11-13 20:08:14+07:00 [TERM="xterm-256color" TTY="/dev/pts/0" COLUMNS="118" LINES="26"]
+[?u[>0q[?1049hP+q696e646e\[?1049l[0c[1m[36m           [30m.[36m-------------------------:
+          .[32m+=[36m========================.
+         :[32m++[36m===[32m++===[36m===============-       :[32m++[36m-
+        :[32m*++[36m====[32m+++++==[36m===========-        .==:
+       -[32m*+++[36m=====[32m+***++=[36m=========:
+      =[32m*++++=[36m=======------------:
+     =[32m*+++++=[36m====-                     [30m...[36m
+   .[32m+*+++++[36m=-===:                    .[32m=+++=[36m:
+  :[32m++++[36m=====-==:                     -***[32m**[36m+
+ :[32m++=[36m=======-=.                      .=+**+[30m.[36m
+.[32m+[36m==========-.                          [30m.[36m
+ :[32m+++++++[36m====-                                [30m.[36m--==-[30m.[36m
+  :[32m++[36m==========.                             [30m:[32m+++++++[36m[30m:
+   [36m.-===========.                            =*****+*+
+    [36m.-===========:                           .+*****+:
+      [36m-=======[32m++++[36m:::::::::::::::::::::::::-:  [30m.[36m---:
+       :======[32m++++[36m====[32m+++******************=.
+        [36m:=====[32m+++[36m==========[32m++++++++++++++*-
+         [36m.====[32m++[36m==============[32m++++++++++*-
+          [36m.===[32m+[36m==================[32m+++++++:
+           [36m.-=======================[32m+++:
+             [30m..........................[m[1G[21A[m[?7l[58C[m[1m[36mpepper[m@[1m[36mmaster-node[m
+[58C------------------
+[58C[m[1m[36mOS[m: [mCachyOS x86_64
+[58C[m[1m[36mHost[m: [m20FMS1B400 (ThinkPad T460)
+[58C[m[1m[36mKernel[m: [mLinux 6.17.7-3-cachyos
+[58C[m[1m[36mUptime[m: [m2 hours, 48 mins
+[58C[m[1m[36mPackages[m: [m2038 (pacman), 12 (flatpak)
+[58C[m[1m[36mShell[m: [mfish 4.2.0
+[58C[m[1m[36mDisplay (CMN14B1)[m: [m1920x1080 @ 1.25x in 14", 60 Hz [Built-in]
+[58C[m[1m[36mDE[m: [mCOSMIC
+[58C[m[1m[36mWM[m: [mcosmic-comp (Wayland)
+[58C[m[1m[36mTheme[m: [mBreeze-Dark [GTK2], Breeze [GTK3]
+[58C[m[1m[36mIcons[m: [mbreeze-dark [GTK2/3/4]
+[58C[m[1m[36mFont[m: [mNoto Sans (10pt) [GTK2/3/4]
+[58C[m[1m[36mCursor[m: [mbreeze (24px)
+[58C[m[1m[36mTerminal[m: [mcosmic-term
+[58C[m[1m[36mCPU[m: [mIntel(R) Core(TM) i7-6600U (4) @ 3.40 GHz
+[58C[m[1m[36mGPU[m: [mIntel HD Graphics 520 @ 1.05 GHz [Integrated]
+[58C[m[1m[36mMemory[m: [m2.64 GiB / 7.49 GiB ([32m35%[m)
+[58C[m[1m[36mSwap[m: [m1.11 GiB / 7.48 GiB ([32m15%[m)
+[58C[m[1m[36mDisk (/)[m: [m75.14 GiB / 238.18 GiB ([32m32%[m) - btrfs
+[58C[m[1m[36mLocal IP (wlan0)[m: [m10.8.142.252/22
+[58C[m[1m[36mBattery (45N1767)[m: [m[32m100%[m [AC Connected]
+[58C[m[1m[36mLocale[m: [men_US.UTF-8
+[58C
+[58C[m[40m   [41m   [42m   [43m   [44m   [45m   [46m   [47m   [m
+[58C[100m   [101m   [102m   [103m   [104m   [105m   [106m   [107m   [m
+[?7h]7;file://master-node/home/pepper/dist-netanalysis[K]0;~/dist-netanalysis - fish[m[6n[0c[?2004h[>4;1m=[K]133;A;click_events=1[34m~/dist-netanalysis [90mmain[90m*
+[35m❯[m [2C[6n[0c[?2004l[>4;0m>]0;~/dist-netanalysis - fish[m[?2004h[>4;1m=[A[K]133;A;click_events=1[34m~/dist-netanalysis [90mmain[90m*
+[35m❯[m [J[2C[6n[0c[?2004l[>4;0m>]0;~/dist-netanalysis - fish[m[?2004h[>4;1m=[A[K]133;A;click_events=1[34m~/dist-netanalysis [90mmain[90m*
+[35m❯[m [J[2Ce[3C[91me[m[3C[90mcho "$HADOOP_CONF_DIR"[m[3C[91mx[m[K[4C[2Dex[4C[90mport HADOOP_CONF_DIR=/opt/hadoop/etc/hadoop && echo $HADOOP_CONF_DIR[m[4Ci[K[5C[3D[91mexi[m[5C[90mt[m[5C[91mt[m[6C[4Dexit[6C[6C[?2004l[>4;0m>[6C
+[m]133;C;cmdline_url=exit]0;~/dist-netanalysis: exit - exit[m]133;D;0[?25h[m
+Script done on 2025-11-13 20:15:11+07:00 [COMMAND_EXIT_CODE="0"]
